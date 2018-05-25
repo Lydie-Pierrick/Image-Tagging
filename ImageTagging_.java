@@ -5,6 +5,7 @@ import ij.plugin.filter.*;
 import java.lang.StringBuilder;
 import java.io.BufferedWriter;
 import java.io.*;
+import ij.io.DirectoryChooser;
 
 public class ImageTagging_ implements PlugInFilter
 {
@@ -12,47 +13,52 @@ public class ImageTagging_ implements PlugInFilter
 
   public void run (ImageProcessor ip)
   {
-    String pathOuput = "C:/Users/Bebo/Documents/Bureau";
+    DirectoryChooser pickDir = new DirectoryChooser("Pick a directory");
+	  String imagePath = pickDir.getDirectory();
+
+    // Level of levelBrightness 255/2
     final Double levelBrightness = ((double)0xff)/2;
 
-    // Convertir vers échelle de gris
-    ImagePlus tempImg = new ImagePlus("ImageConvert", ip);
-    new ImageConverter(tempImg).convertToGray8();
+    // Convert current image to gray scale
+    ImagePlus grayImage = new ImagePlus(null, ip);
+    new ImageConverter(grayImage).convertToGray8();
 
-    ImageProcessor ipTemp = tempImg.getProcessor() ;
+    ImageProcessor grayImageProcessor = grayImage.getProcessor() ;
 
-    Double averageCurrent = AverageNdg(ipTemp); // Get la moyenne de gris
-    IJ.showMessage("Moyenne niveau de gris : " + averageCurrent);
+    // Get the average of gray scale
+    Double averageCurrent = AverageNdg(grayImageProcessor);
+    IJ.showMessage("Average of gray : " + averageCurrent);
 
     if(averageCurrent == -1.0)
-        IJ.showMessage("Erreur : impossible d'avoir la moyenne de gris !");
+        IJ.showMessage("Error : Impossible to get the average of gray");
     else
     {
       try {
         StringBuilder output = new StringBuilder();
-        BufferedWriter printWriter = new BufferedWriter(new FileWriter(pathOuput + "/testPierrick.txt"));
+        // Writes an output file
+        BufferedWriter printWriter = new BufferedWriter(new FileWriter( imagePath + "/outputTagging.txt"));
 
+        // If the result of the average is greater than 255, then the picture is brigth else dark
         if(averageCurrent > levelBrightness)
-            printWriter.write("clair");
+            printWriter.write("Brigth");
         else
-            printWriter.write("foncé");
+            printWriter.write("Dark");
 
         printWriter.close();
 
-        IJ.showMessage("Lecture de l'image termine ! :)");
-
+        IJ.showMessage("ImageTagging sucessfully finished :)");
       }
       catch (FileNotFoundException e)
       {
-          IJ.showMessage("Erreur ! Fichier non trouve " + e.getMessage());
+          IJ.showMessage("Error ! File not found " + e.getMessage());
       }
       catch (IOException e) {
-          IJ.showMessage("Erreur ! Entree/Sortie " + e.getMessage());
+          IJ.showMessage("Error ! Input/Output " + e.getMessage());
       }
     }
   }
 
-  // Retourne la moyenne des NdG d’une image en NdG
+  // Average of gray scale
   public double AverageNdg(ImageProcessor ip)
   {
     byte [] pixels = ( byte []) ip.getPixels ();
