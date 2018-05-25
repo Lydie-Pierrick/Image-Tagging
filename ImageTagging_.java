@@ -216,7 +216,7 @@ public class ImageTagging_ implements PlugInFilter
     // All the keys
     for (String key : map.keySet()) {
       percentage = (double)map.get(key) / (double)counterSum;
-      if(percentage >= 0.1){ // If a color account for 50%
+      if(percentage >= 0.1){ // If a color account for 10%
         mainColors.add(key); // Add this color into list
       }
     }
