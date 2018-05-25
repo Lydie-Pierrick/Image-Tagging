@@ -48,9 +48,9 @@ public class ImageTagging_ implements PlugInFilter
         // Writes an output file
         BufferedWriter printWriter = new BufferedWriter(new FileWriter( imagePath + "/outputTagging.txt"));
 
-        // If the result of the average is greater than 255, then the picture is bright else dark
+        // If the result of the average is greater than 255, then the picture is light else dark
         if(averageCurrent > levelBrightness)
-            printWriter.write("bright,");
+            printWriter.write("light,");
         else
             printWriter.write("dark,");
 
