@@ -102,7 +102,7 @@ public class ImageTagging_ implements PlugInFilter
       }
 
       image = imp;
-      return DOES_8G | DOES_16 | DOES_32 | DOES_RGB;
+      return DOES_ALL;
   }
 
   public Map<String, Integer> rgbToHsv(ImageProcessor ip)
