@@ -14,14 +14,14 @@ public class ImageTagging_ implements PlugInFilter
 
   public void run (ImageProcessor ip)
   {
-      DirectoryChooser pickDir = new DirectoryChooser("Pick a directory");
-  	  String imagePath = pickDir.getDirectory();
+  	  String imagePath = image.getOriginalFileInfo().directory;
 
-      // Level of levelBrightness 255/2
+      // Level of levelBrightness 128
       final Double levelBrightness = ((double)0xff)/2;
 
       // Convert current image to gray scale
-      ImagePlus grayImage = new ImagePlus(null, ip);
+      ImagePlus grayImage = new ImagePlus("grey", ip);
+
       new ImageConverter(grayImage).convertToGray8();
 
       ImageProcessor grayImageProcessor = grayImage.getProcessor() ;
@@ -34,19 +34,19 @@ public class ImageTagging_ implements PlugInFilter
 
       List<String> mainColors = getMainColors(map);
       String colors = " ";
-      for(String color : mainColors){
-        colors += color + ", ";
+      for(int i = 0; i < mainColors.size() - 1; i++){
+        colors += mainColors.get(i) + ", ";
       }
+      colors += mainColors.get(mainColors.size() - 1);
       IJ.showMessage("Main colors : " + colors);
 
       // Get the average of gray scale
       Double averageCurrent = AverageNdg(grayImageProcessor);
-      IJ.showMessage("Average of gray : " + averageCurrent);
 
       try {
         StringBuilder output = new StringBuilder();
         // Writes an output file
-        BufferedWriter printWriter = new BufferedWriter(new FileWriter( imagePath + "/outputTagging.txt"));
+        BufferedWriter printWriter = new BufferedWriter(new FileWriter( imagePath + image.getShortTitle()+".txt"));
 
         // If the result of the average is greater than 255, then the picture is light else dark
         if(averageCurrent > levelBrightness)
@@ -58,7 +58,7 @@ public class ImageTagging_ implements PlugInFilter
         printWriter.close();
 
 
-        IJ.showMessage("ImageTagging sucessfully finished :)");
+        IJ.showMessage("ImageTagging finished sucessfully :) And a .txt file was saved in the directory.");
       }
       catch (FileNotFoundException e)
       {
