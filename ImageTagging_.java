@@ -28,9 +28,6 @@ public class ImageTagging_ implements PlugInFilter
 
       // Get main colors
       Map<String, Integer> map = rgbToHsv(ip);
-      // IJ.showMessage("Results： \n" + "Orange " + map.get("Orange") + "\nYellow " + map.get("Yellow") + "\nGreen " + map.get("Green") +
-      // "\nBlue " + map.get("Blue") + "\nPurple " + map.get("Purple") + "\nRed " + map.get("Red") + "\nGrey " + map.get("Grey") + "\nBlack "
-      // + map.get("Black") + "\nWhite " + map.get("White"));
 
       List<String> mainColors = getMainColors(map);
       String colors = " ";
